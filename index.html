@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Flip Game</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            width: 50px;
+            height: 50px;
+            border: 1px solid black;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .bulb {
+            background-color: yellow;
+        }
+    </style>
+</head>
+
+<body>
+    <table id="game-board"></table>
+    <script>
+        const numRows = 5;
+        const numCols = 5;
+
+        // Generate an initial game board
+        const gameBoard = [];
+        for (let i = 0; i < numRows; i++) {
+            const row = [];
+            for (let j = 0; j < numCols; j++) {
+                row.push(0);
+            }
+            gameBoard.push(row);
+        }
+
+        // Render the game board
+        const table = document.getElementById('game-board');
+        for (let i = 0; i < numRows; i++) {
+            const row = document.createElement('tr');
+            for (let j = 0; j < numCols; j++) {
+                const cell = document.createElement('td');
+                cell.dataset.row = i;
+                cell.dataset.col = j;
+                if (gameBoard[i][j] === 1) {
+                    cell.classList.add('bulb');
+                }
+                row.appendChild(cell);
+            }
+            table.appendChild(row);
+        }
+
+        // Attach click event listeners to the cells
+        table.addEventListener('click', function (event) {
+            const cell = event.target;
+            const row = parseInt(cell.dataset.row);
+            const col = parseInt(cell.dataset.col);
+            flipCell(gameBoard, row, col);
+            renderGameBoard(gameBoard);
+            let success = checkWin(gameBoard)
+            if (success) {
+                alert("you win")
+            }
+        });
+
+        // Flip the cell and its neighbors
+        function flipCell(gameBoard, row, col) {
+            gameBoard[row][col] = 1 - gameBoard[row][col];
+            if (row > 0) {
+                gameBoard[row - 1][col] = 1 - gameBoard[row - 1][col];
+            }
+            if (row < gameBoard.length - 1) {
+                gameBoard[row + 1][col] = 1 - gameBoard[row + 1][col];
+            }
+            if (col > 0) {
+                gameBoard[row][col - 1] = 1 - gameBoard[row][col - 1];
+            }
+            if (col < gameBoard[0].length - 1) {
+                gameBoard[row][col + 1] = 1 - gameBoard[row][col + 1];
+            }
+        }
+
+        function renderGameBoard(gameBoard) {
+            const table = document.getElementById('game-board');
+            for (let i = 0; i < gameBoard.length; i++) {
+                for (let j = 0; j < gameBoard[i].length; j++) {
+                    const cell = table.rows[i].cells[j];
+                    if (gameBoard[i][j] === 1) {
+                        cell.classList.add('bulb');
+                    } else {
+                        cell.classList.remove('bulb');
+                    }
+                }
+            }
+        }
+
+        function checkWin(gameBoard) {
+            for (let i = 0; i < gameBoard.length; i++) {
+                for (let j = 0; j < gameBoard[i].length; j++) {
+                    if (gameBoard[i][j] === 0) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function solveFlip() {
+            //TODO see https://mathworld.wolfram.com/LightsOutPuzzle.html
+        }
+
+
+    </script>
+</body>
