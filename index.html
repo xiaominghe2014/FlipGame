@@ -55,8 +55,8 @@
 
         .modal-title {
             animation-name: title_animate;
-            animation-duration: 1s;
-            animation-iteration-count: 1;
+            animation-duration: 2s;
+            animation-iteration-count: infinite;
         }
 
         @keyframes celebrate {
@@ -86,6 +86,10 @@
             animation-duration: 1s;
             animation-iteration-count: 3;
         }
+
+        .modal-footer {
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -102,7 +106,7 @@
                     <p class="celebrate text-center">🎉🎉🎉</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default text-center" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default text-center" data-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
