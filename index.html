@@ -3,6 +3,9 @@
 
 <head>
     <title>Flip Game</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
         table {
             border-collapse: collapse;
@@ -27,6 +30,21 @@
 
 <body>
     <table id="game-board"></table>
+    <div id="win-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">You Win!</h4>
+                </div>
+                <div class="modal-body">
+                    Congratulations, you have won the game!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default text-center" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         const numRows = 5;
         const numCols = 5;
@@ -66,7 +84,7 @@
             renderGameBoard(gameBoard);
             let success = checkWin(gameBoard)
             if (success) {
-                alert("you win")
+                $('#win-modal').modal('show');
             }
         });
 
