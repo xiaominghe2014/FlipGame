@@ -25,6 +25,67 @@
         .bulb {
             background-color: yellow;
         }
+
+        @keyframes title_animate {
+            200% {
+                /* transform: rotate(0deg); */
+                color: red;
+            }
+
+            150% {
+                /* transform: rotate(90deg); */
+                color: orange;
+            }
+
+            125% {
+                /* transform: rotate(180deg); */
+                color: yellow;
+            }
+
+            110% {
+                /* transform: rotate(270deg); */
+                color: green;
+            }
+
+            100% {
+                /* transform: rotate(360deg); */
+                color: blue;
+            }
+        }
+
+        .modal-title {
+            animation-name: title_animate;
+            animation-duration: 1s;
+            animation-iteration-count: 1;
+        }
+
+        @keyframes celebrate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(10deg);
+            }
+
+            50% {
+                transform: rotate(-10deg);
+            }
+
+            75% {
+                transform: rotate(10deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        .celebrate {
+            animation-name: celebrate;
+            animation-duration: 1s;
+            animation-iteration-count: 3;
+        }
     </style>
 </head>
 
@@ -34,10 +95,11 @@
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">You Win!</h4>
+                    <h4 class="modal-title text-center">You Win!</h4>
                 </div>
                 <div class="modal-body">
-                    Congratulations, you have won the game!
+                    <p>Congratulations, you have won the game!</p>
+                    <p class="celebrate text-center">🎉🎉🎉</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default text-center" data-dismiss="modal">Close</button>
