@@ -3,9 +3,9 @@
 
 <head>
     <title>Flip Game</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
     <style>
         table {
             border-collapse: collapse;
@@ -95,7 +95,7 @@
 
 <body>
     <table id="game-board"></table>
-    <div id="win-modal" class="modal fade" role="dialog">
+    <!-- <div id="win-modal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
@@ -110,10 +110,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <script>
-        const numRows = 5;
-        const numCols = 5;
+        const numRows = 10;
+        const numCols = 10;
 
         // Generate an initial game board
         const gameBoard = [];
@@ -150,7 +150,7 @@
             renderGameBoard(gameBoard);
             let success = checkWin(gameBoard)
             if (success) {
-                $('#win-modal').modal('show');
+                // $('#win-modal').modal('show');
             }
         });
 
@@ -198,6 +198,7 @@
 
         function solveFlip() {
             //TODO see https://mathworld.wolfram.com/LightsOutPuzzle.html
+            //solver link https://github.com/simplify-life/Xlib
         }
 
 
