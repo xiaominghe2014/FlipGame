@@ -7,6 +7,14 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
     <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+        }
+        #game-board-container {
+            margin-right: 20px;
+        }
         table {
             border-collapse: collapse;
         }
@@ -34,15 +42,40 @@
             margin: auto;
             pointer-events: none;
         }
+
+        .button {
+            background-color: rgb(255, 234, 0);
+            border-radius: 5px;
+            color: black;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            margin-top: 50px; 
+        }
     </style>
 </head>
 
 <body>
-    <button id="reset-button">重置棋盘大小</button>
-    <table id="game-board"></table>
-    <button id="add-marker-button">查看参考答案</button>
+    <div id="game-board-container">
+        <table id="game-board"></table>
+    </div>
+    <div class="button-container">
+        <button id="reset-button" class="button">重置棋盘大小</button>
+        <button id="add-marker-button" class="button">查看参考答案</button>
+      </div>
     <script>
-        var lightSize = 10;
+        var lightSize = 5;
         var numRows = lightSize;
         var numCols = lightSize;
 
@@ -112,7 +145,13 @@
         }
 
         const resetBoard = function () {
-            lightSize = parseInt(prompt("Enter new board size:"));
+            let tmp = parseInt(prompt("Enter new board size:"));
+
+            if (isNaN(tmp) || tmp < 1) {
+                alert("输入数据不对");
+                return;
+            }
+            lightSize = tmp;
             numRows = lightSize;
             numCols = lightSize;
             gameBoard.length = 0;
