@@ -26,133 +26,141 @@
             background-color: yellow;
         }
 
-        @keyframes title_animate {
-            200% {
-                /* transform: rotate(0deg); */
-                color: red;
-            }
-
-            150% {
-                /* transform: rotate(90deg); */
-                color: orange;
-            }
-
-            125% {
-                /* transform: rotate(180deg); */
-                color: yellow;
-            }
-
-            110% {
-                /* transform: rotate(270deg); */
-                color: green;
-            }
-
-            100% {
-                /* transform: rotate(360deg); */
-                color: blue;
-            }
-        }
-
-        .modal-title {
-            animation-name: title_animate;
-            animation-duration: 2s;
-            animation-iteration-count: infinite;
-        }
-
-        @keyframes celebrate {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            25% {
-                transform: rotate(10deg);
-            }
-
-            50% {
-                transform: rotate(-10deg);
-            }
-
-            75% {
-                transform: rotate(10deg);
-            }
-
-            100% {
-                transform: rotate(0deg);
-            }
-        }
-
-        .celebrate {
-            animation-name: celebrate;
-            animation-duration: 1s;
-            animation-iteration-count: 3;
-        }
-
-        .modal-footer {
-            text-align: center;
+        .marker {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: blue;
+            margin: auto;
+            pointer-events: none;
         }
     </style>
 </head>
 
 <body>
+    <button id="reset-button">重置棋盘大小</button>
     <table id="game-board"></table>
-    <!-- <div id="win-modal" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title text-center">You Win!</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Congratulations, you have won the game!</p>
-                    <p class="celebrate text-center">🎉🎉🎉</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default text-center" data-dismiss="modal">OK</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
+    <button id="add-marker-button">查看参考答案</button>
     <script>
-        const numRows = 10;
-        const numCols = 10;
+        var lightSize = 10;
+        var numRows = lightSize;
+        var numCols = lightSize;
 
         // Generate an initial game board
-        const gameBoard = [];
-        for (let i = 0; i < numRows; i++) {
-            const row = [];
-            for (let j = 0; j < numCols; j++) {
-                row.push(0);
-            }
-            gameBoard.push(row);
-        }
+        var gameBoard = [];
 
-        // Render the game board
-        const table = document.getElementById('game-board');
-        for (let i = 0; i < numRows; i++) {
-            const row = document.createElement('tr');
-            for (let j = 0; j < numCols; j++) {
-                const cell = document.createElement('td');
-                cell.dataset.row = i;
-                cell.dataset.col = j;
-                if (gameBoard[i][j] === 1) {
-                    cell.classList.add('bulb');
+        var tip = [];
+
+        const initBoard = function () {
+            for (let i = 0; i < numRows; i++) {
+                const row = [];
+                for (let j = 0; j < numCols; j++) {
+                    row.push(0);
                 }
-                row.appendChild(cell);
+                gameBoard.push(row);
             }
-            table.appendChild(row);
+            const table = document.getElementById('game-board');
+            for (let i = 0; i < numRows; i++) {
+                const row = document.createElement('tr');
+                for (let j = 0; j < numCols; j++) {
+                    const cell = document.createElement('td');
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    if (gameBoard[i][j] === 1) {
+                        cell.classList.add('bulb');
+                    }
+                    row.appendChild(cell);
+                }
+                table.appendChild(row);
+            }
         }
 
-        // Attach click event listeners to the cells
-        table.addEventListener('click', function (event) {
+        const boardClick = function (event) {
             const cell = event.target;
             const row = parseInt(cell.dataset.row);
             const col = parseInt(cell.dataset.col);
+            console.log("row:" + row, "col:" + col);
+            if (tip.length > 0) {
+                if (row > -1 && row < tip.length) {
+                    if (col > -1 && row < tip[0].length) {
+                        tip[row][col] = 0;
+                        const table = document.getElementById('game-board');
+                        const cell = table.rows[row].cells[col];
+                        const markers = cell.querySelectorAll('.marker');
+                        markers.forEach(marker => marker.remove());
+                    }
+                }
+            }
             flipCell(gameBoard, row, col);
             renderGameBoard(gameBoard);
             let success = checkWin(gameBoard)
             if (success) {
                 // $('#win-modal').modal('show');
             }
-        });
+        }
+
+        const addBoardEventListener = function () {
+            const table = document.getElementById('game-board');
+            // Attach click event listeners to the cells
+            table.addEventListener('click', boardClick);
+        }
+
+        const removeBoardEventListener = function () {
+            const table = document.getElementById('game-board');
+            // Attach click event listeners to the cells
+            table.removeEventListener('click', boardClick);
+        }
+
+        const resetBoard = function () {
+            lightSize = parseInt(prompt("Enter new board size:"));
+            numRows = lightSize;
+            numCols = lightSize;
+            gameBoard.length = 0;
+            const table = document.getElementById('game-board');
+            table.innerHTML = '';
+            initBoard();
+            removeBoardEventListener();
+            addBoardEventListener();
+            tip = [];
+            renderTip();
+        }
+
+        const renderTip = function () {
+            const table = document.getElementById('game-board');
+            let noTip = tip.length == 0;
+            for (let i = 0; i < numRows; i++) {
+                for (let j = 0; j < numCols; j++) {
+                    const cell = table.rows[i].cells[j];
+                    if (!noTip && tip[i][j] === 1) {
+                        const marker = document.createElement('div');
+                        marker.classList.add('marker');
+                        cell.appendChild(marker);
+                    } else {
+                        const markers = cell.querySelectorAll('.marker');
+                        markers.forEach(marker => marker.remove());
+                    }
+                }
+            }
+        }
+
+        initBoard();
+        addBoardEventListener();
+        document.getElementById('reset-button').addEventListener('click', resetBoard);
+
+        const addMarker = function () {
+            tip = solveFlip()
+
+            for (let i = 0; i < numRows; i++) {
+                for (let j = 0; j < numCols; j++) {
+                    gameBoard[i][j] = 0;
+                }
+            }
+            renderGameBoard(gameBoard);
+            renderTip();
+        }
+
+
+        document.getElementById('add-marker-button').addEventListener('click', addMarker);
 
         // Flip the cell and its neighbors
         function flipCell(gameBoard, row, col) {
@@ -196,11 +204,151 @@
             return true;
         }
 
+        function gcd(a, b) {
+            if (b == 0) return a;
+            return gcd(b, a % b);
+        }
+
+        function lcm(a, b) {
+            if (0 == a || b == 0) return 0;
+            a = a < 0 ? -a : a;
+            b = b < 0 ? -b : b;
+            return a * b / gcd(a, b);
+        }
+
+        function lcmArr(nums) {
+            let n = nums.length;
+            if (n == 0) {
+                return -1;
+            }
+            let result = nums[0] < 0 ? -nums[0] : nums[0];
+            for (let i = 0; i < n; i++) {
+                result = lcm(result, nums[i]);
+            }
+            return result;
+        }
+
         function solveFlip() {
             //TODO see https://mathworld.wolfram.com/LightsOutPuzzle.html
             //solver link https://github.com/simplify-life/Xlib#LightsOutPuzzle
-        }
+            let r = lightSize * lightSize
+            let matrixLight = [];
+            for (let i = 0; i < r; i++) {
+                const row = [];
+                for (let j = 0; j < r; j++) {
+                    row.push(0);
+                }
+                matrixLight.push(row);
+            }
 
+
+            for (let i = 0; i < lightSize; i++) {
+                for (let j = 0; j < lightSize; j++) {
+                    //点亮 i 行j 列的灯
+                    let c = i * lightSize + j;
+                    // 上
+                    if (i > 0) {
+                        let r = (i - 1) * lightSize + j;
+                        matrixLight[c][r] = 1;
+                    }
+                    // 下
+                    if (i < lightSize - 1) {
+                        let r = (i + 1) * lightSize + j;
+                        matrixLight[c][r] = 1;
+                    }
+                    // 中
+                    {
+                        let r = i * lightSize + j;
+                        matrixLight[c][r] = 1;
+                    }
+                    // 左
+                    if (j > 0) {
+                        let r = i * lightSize + j - 1;
+                        matrixLight[c][r] = 1;
+                    }
+                    // 右
+                    if (j < lightSize - 1) {
+                        let r = i * lightSize + j + 1;
+                        matrixLight[c][r] = 1;
+                    }
+                }
+            }
+
+            let status = new Array(r).fill(1);
+            let result = new Array(r).fill(0);
+            let canceled = new Array(r).fill(false);
+            let freeArg = [];
+            let mod = 2;
+            for (let j = 0; j < r; j++) {
+                let pivot = false;
+                for (let i = 0; i < r; i++) {
+                    //找到第i 行 第j 列不为0的元素作为主元
+                    if (!canceled[i] && !pivot && matrixLight[i][j] != 0) {
+                        pivot = true;
+                        canceled[i] = true;
+                        //查找最小公倍数
+                        let v = [];
+                        for (let k = 0; k < r; k++) {
+                            if (matrixLight[k][j] != 0) {
+                                v.push(matrixLight[k][j]);
+                            }
+                        }
+                        let lc = lcmArr(v);
+                        for (let k = 0; k < r; k++) {
+                            if (matrixLight[k][j] != 0) {
+                                let mul = lc / matrixLight[k][j];
+                                for (let l = 0; l < r; l++) {
+                                    matrixLight[k][l] = (matrixLight[k][l] * mul) % mod;
+                                }
+                                status[k] = (status[k] * mul) % mod;
+                            }
+                        }
+                        //消元
+                        for (let k = 0; k < r; k++) {
+                            if (k != i && matrixLight[k][j] != 0) {
+                                //k行减去i行
+                                for (let l = 0; l < r; l++) {
+                                    matrixLight[k][l] = (matrixLight[k][l] - matrixLight[i][l]) % mod;
+                                }
+                                status[k] = (status[k] - status[i]) % mod;
+                            }
+                        }
+                    }
+                }
+                if (!pivot) {
+                    //没有找到主元
+                    //自由变量
+                    freeArg.push(j);
+                }
+            }
+            for (let i = 0; i < r; i++) {
+                for (let j = 0; j < r; j++) {
+                    //i 行 j 列
+                    if (matrixLight[i][j] != 0) {
+                        //第j个解
+                        result[j] = Math.abs((status[i] / matrixLight[i][j]) % mod);
+                    }
+                }
+            }
+
+            for (let i = 0; i < freeArg.length; i++) {
+                result[freeArg[i]] = 0;
+            }
+            let tip = []
+            for (let i = 0; i < lightSize; i++) {
+                const row = [];
+                for (let j = 0; j < lightSize; j++) {
+                    row.push(0);
+                }
+                tip.push(row);
+            }
+            for (let i = 0; i < lightSize; i++) {
+                for (let j = 0; j < lightSize; j++) {
+                    tip[i][j] = result[i * lightSize + j];
+                }
+            }
+            return tip;
+        }
 
     </script>
 </body>
